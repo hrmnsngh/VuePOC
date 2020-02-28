@@ -1,23 +1,43 @@
 <script>
+    import axios from "axios"
+
 export default {
-    
+    beforeCreate:function(){
+        var id = this.$route.params.id
+        axios({
+            method:'get',
+            url:'https://apibyashu.herokuapp.com/api/product/'+id
+        }).then((response)=>{
+            console.log("response from get product api", response)
+            this.product =response.data.data
+        },(error)=>{
+           console.log("error from get product api" , error)
+        })
+    },
+    data:function(){
+        return {
+            product:{}
+        }
+    }
 }
 </script>
 <template>
    <div class="container" style=" padding:20px ">
   
   <div class="row">
+
       <div class="col-md-6">
           
-<img v-bind:src="product.image" alt="image not avilable" style= "width: 416px; height: 416px" ><br>
-          <button  class="btn btn-outline-info col-md-5" style="padding: 10px"   >Add to Cart</button>
-          <button class="btn btn-outline-success col-md-5" style="padding: 10px" >Buy now</button>
+        <img v-bind:src="product.image" alt="image not avilable" style= "width: 416px; height: 416px" >
+        <br>
+        <button  class="btn btn-outline-info col-md-5" style="padding: 10px"   >Add to Cart</button>
+<button class="btn btn-outline-success col-md-5" style="padding: 10px" >Buy now</button>
       </div>
       <div class="col-md-6">
 
           <table>
               <tr>
-                  <td><h3>{{product.pname}}</h3></td>
+                  <td><h3>{{product.name}}</h3></td>
               </tr>
               <tr>
                   <td><h3>{{product.price}}</h3></td>
