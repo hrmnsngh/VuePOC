@@ -1,40 +1,40 @@
-<template>
-    <div class="container-fluid">
-    <Product class="col-sm-3" v-bind:router="$router" v-for="(p,index) in products" v-bind:key="index" v-bind:product="p"></Product>
-    </div>
-</template>
-
 <script>
-import Product from './Product'
-import axios from 'axios'
+import Product from "./Product.vue"
+import axios from "axios"
+
 export default {
-    data: function(){
+    data:function(){
         return{
             products:[]
         }
     },
-    components:{
-        Product
-    },
-    created: function(){
-    axios({
-      method: 'get',
-      url: 'https://apibyashu.herokuapp.com/api/allproducts'
-    })
-    .then(
-      (response)=>{
-        //console.log(`resp : ${JSON.stringify(response.data.data)}`);
-        this.products = response.data.data;
-        //console.log(`product ${JSON.stringify(this.products)}`);
-      }
-     ,(error)=>{
-      console.log(`error ${JSON.stringify(error)}`)
-     }
-    );
-    }
+    created:function(){
+        console.log("this router" , this.$router)
+     axios({
+       method:'get',
+       url:'https://apibyashu.herokuapp.com/api/allproducts'
+     }).then((response)=>{
+       console.log("response received", response)
+       this.products = response.data.data
+     },(error)=>{
+       console.log("error in all products api", error)
+     })
+  },
+  components:{
+      Product
+  }
+    
 }
 </script>
+<template>
+<div class="row">
+    <Product v-bind:$router="$router" class="col-md-3" v-for="(p,index) in products" v-bind:product="p" v-bind:key="index"></Product>
 
-<style lang="css" scoped>
+</div>
+    
+</template>
+<style>
 
 </style>
+
+

@@ -1,65 +1,56 @@
-<template>
-    <div class="container">
-        <div class="row">
-        <input class="form-control" type="email" v-model="user.email" name="email" id="email" placeholder="email">
-        <input class="form-control" type="password" v-model="user.password" name="password" id="password" placeholder="password">
-        </div>
-        <div class="row">
-        <button v-on:click="Login()" class="btn btn-primary">Login</button>
-        <GoogleLogin  class="btn btn-primary"></GoogleLogin>
-        </div>
-    <div class="row">
-        <button class="btn btn-primary">Sign-Up</button>
-    </div>
+<script>
+import axios from "axios"
+export default {
+beforeCreate:function(){
+        console.log("before login state" , this.$store.state)
+  
+if(localStorage.email){
+  this.$router.push('/')
+}
+},
+data:function(){
+    return {
+       email:null,
+       password:null
+    }
+},
+methods:{
+     login:function(){
+         var user = {
+             email:this.email,
+             password:this.password
+         }
+        console.log("login clicked", user)
+        axios({
+            method:'post',
+            url:'https://apibyashu.herokuapp.com/api/login',
+            data:user
+        }).then((response)=>{
+            console.log("response from login api", response)
+            if(response.data.token){
+              localStorage.email = response.data.email
+              localStorage.name = response.data.name
+              this.$store.commit('login')      
+              console.log("......" , this.$store.state)        
+              this.$router.push('/')
+            }
+        },(error)=>{
+        console.log("error from login api", error)
+        })
 
-    </div>
+     }
+}
+}
+
+</script>
+<template>
+ <div>
+  <input class="form-control" v-model="email" placeholder="Email">
+  <input class="form-control" v-model="password" placeholder="Password" type="password"> 
+  <button class="btn btn-primary" v-on:click="login()">Login</button> 
+  <router-link to="/forgot">Forgot Your Password ? Click Here</router-link>
+  </div>
 </template>
 
-<script>
-import GoogleLogin from './GoogleLogin'
-import axios from 'axios'
-
-export default {
-    beforeCreate: function(){
-        if(sessionStorage.email){
-            this.$router.push('');
-        }
-    },
-
-    data: function(){
-        return{
-            user: {
-            email:'' ,
-            password: ''
-            },
-            authToken: ''
-
-        }
-    },
-    methods: {
-        Login: function(){
-            axios({method: 'post', url:'https://apibyashu.herokuapp.com/api/login', data: this.user})
-            .then(
-                (response)=>{
-                    console.log('resp', response.data);
-                    this.authToken = response.data.token;
-                    console.log('authToken',this.user.authToken);
-
-                },
-                (error) =>{
-                    console.log('error',JSON.stringify(error));
-                }
-            );
-        }
-    },
-    components: {
-        GoogleLogin
-    }
-}
-</script>
-
-<style lang="css" scoped>
-*{
-    margin:10px;
-}
+<style>
 </style>
